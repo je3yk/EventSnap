@@ -1,20 +1,27 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { NavigationContainer } from "@react-navigation/native";
+import { registerRootComponent } from "expo";
+import { CameraScreen, GalleryScreen, TimetableScreen } from "./screens";
 
-export default function App() {
+const Tab = createBottomTabNavigator();
+
+function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Tab.Navigator
+        initialRouteName="Events"
+        screenOptions={() => ({
+          headerShown: false,
+          tabBarActiveTintColor: "tomato",
+          tabBarInactiveTintColor: "gray",
+        })}
+      >
+        <Tab.Screen name="Timetable" component={TimetableScreen} />
+        <Tab.Screen name="Camera" component={CameraScreen} />
+        <Tab.Screen name="Details" component={GalleryScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default registerRootComponent(App);
