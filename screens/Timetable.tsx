@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     flexDirection: "row",
     alignItems: "flex-start",
-    gap: "10px",
+    gap: 10,
   },
   time: {
     minWidth: 50,
