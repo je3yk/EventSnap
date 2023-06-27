@@ -1,15 +1,24 @@
-import { useEffect, useState } from "react";
-import { StyleSheet, FlatList, View, Image } from "react-native";
+import { useEffect, useMemo, useState } from "react";
+import {
+  StyleSheet,
+  FlatList,
+  View,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import { Dimensions } from "react-native";
 import * as MediaLibrary from "expo-media-library";
 import { useIsFocused } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-const IMAGE_SIZE = Dimensions.get("window").width / 3;
+import config from "../utils/config";
 
 export function GalleryScreen() {
   const [images, setImages] = useState([]);
   const isFocused = useIsFocused();
+
+  const IMAGE_SIZE = useMemo(() => {
+    return config.WIDTH / 3 - 2;
+  }, []);
 
   useEffect(() => {
     async function fetchPhotos() {
@@ -37,7 +46,7 @@ export function GalleryScreen() {
           }
 
           return (
-            <View
+            <TouchableOpacity
               style={{
                 width: IMAGE_SIZE,
                 height: IMAGE_SIZE,
@@ -50,7 +59,7 @@ export function GalleryScreen() {
                   height: IMAGE_SIZE,
                 }}
               />
-            </View>
+            </TouchableOpacity>
           );
         }}
         numColumns={3}
