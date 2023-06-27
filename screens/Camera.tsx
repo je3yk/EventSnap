@@ -3,17 +3,26 @@ import { useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Button from "../components/Button";
 import { useIsFocused } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import config from "../utils/config";
 
 export function CameraScreen({ navigation }) {
-  const [type, setType] = useState(CameraType.back);
-  const [isReady, setCameraReady] = useState(false);
+  const [type, setType] = useState(CameraType.front);
   const [flashMode, setFlashMode] = useState(FlashMode.off);
   const cameraRef = useRef(null);
   const isFocused = useIsFocused();
 
+  const buttonsContainerPosition = {
+    bottom: config.BOTTOM_BAR_HEIGHT + 40,
+  };
+
+  const cameraViewPosition = {
+    bottom: config.BOTTOM_BAR_HEIGHT + 30,
+  };
+
   function toggleCameraType() {
     setType((current) =>
-      current === CameraType.back ? CameraType.front : CameraType.back
+      current === CameraType.front ? CameraType.back : CameraType.front
     );
   }
 
@@ -24,7 +33,6 @@ export function CameraScreen({ navigation }) {
   }
 
   async function takePicture() {
-    setCameraReady(false);
     if (cameraRef) {
       try {
         const photoData = await cameraRef.current.takePictureAsync();
@@ -33,66 +41,65 @@ export function CameraScreen({ navigation }) {
         console.log(e);
       }
     }
-    setCameraReady(true);
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.cameraContainer}>
+    <SafeAreaView style={styles.container}>
+      <View style={[styles.cameraContainer, cameraViewPosition]}>
         {isFocused && (
           <Camera
             ref={cameraRef}
             style={styles.camera}
             type={type}
             flashMode={flashMode}
-            ratio="4:3"
-            onCameraReady={() => setCameraReady(true)}
+            ratio="16:9"
           ></Camera>
         )}
       </View>
-      <View style={styles.buttonContainer}>
-        <Button icon="camera-flip-outline" onPress={toggleCameraType} />
+      <View style={[styles.buttonContainer, buttonsContainerPosition]}>
+        <Button
+          variant="normal wrapper"
+          icon="camera-flip-outline"
+          onPress={toggleCameraType}
+        />
         <Button
           icon="camera"
           iconType="MaterialIcons"
           onPress={takePicture}
-          variant="big"
+          variant="big wrapper"
         />
         <Button
+          variant="normal wrapper"
           icon={flashMode === FlashMode.on ? "flash-off" : "flash"}
           onPress={toggleFlashMode}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#2d2d2d",
+    backgroundColor: "rgb(45, 45, 45)",
     justifyContent: "flex-start",
     position: "relative",
   },
   cameraContainer: {
     width: "100%",
     borderRadius: 30,
-    marginTop: 80,
+    position: "absolute",
   },
   camera: {
     width: "100%",
-    aspectRatio: "3/4",
-    flexDirection: "column",
-    alignItems: "flex-start",
+    aspectRatio: "9/16",
   },
   buttonContainer: {
     width: "90%",
     backgroundColor: "transparent",
     flexDirection: "row",
-    padding: 10,
-    bottom: 85,
     justifyContent: "space-between",
-    alignItems: "flex-end",
+    alignItems: "center",
     alignSelf: "center",
     position: "absolute",
   },

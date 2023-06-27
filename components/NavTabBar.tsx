@@ -61,8 +61,7 @@ export default function NavTabBar({
 
 const styles = StyleSheet.create({
   tabBar: {
-    padding: 10,
-    backgroundColor: "white",
+    padding: 5,
     flexDirection: "row",
     width: "90%",
     borderRadius: 50,

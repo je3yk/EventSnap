@@ -3,6 +3,7 @@ import { StyleSheet, FlatList, View, Image } from "react-native";
 import { Dimensions } from "react-native";
 import * as MediaLibrary from "expo-media-library";
 import { useIsFocused } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const IMAGE_SIZE = Dimensions.get("window").width / 3;
 
@@ -23,7 +24,7 @@ export function GalleryScreen() {
   }, [isFocused]);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <FlatList
         data={images}
         keyExtractor={(item) => item.id}
@@ -54,14 +55,14 @@ export function GalleryScreen() {
         }}
         numColumns={3}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: 60,
+    paddingTop: 5,
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",

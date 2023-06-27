@@ -2,9 +2,15 @@ import { View, StyleSheet, ImageBackground } from "react-native";
 import Button from "../components/Button";
 import NavButton from "../components/NavButton";
 import * as MediaLibrary from "expo-media-library";
+import { SafeAreaView } from "react-native-safe-area-context";
+import config from "../utils/config";
 
 export function PhotoEditorScreen({ navigation, route }) {
   const { photoData } = route.params;
+
+  const imageViewPosition = {
+    bottom: config.BOTTOM_BAR_HEIGHT + 30,
+  };
 
   // async function using expo-media-library for saving image
   async function saveImage() {
@@ -25,10 +31,10 @@ export function PhotoEditorScreen({ navigation, route }) {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <ImageBackground
         source={photoData}
-        style={styles.imageView}
+        style={[styles.imageView, imageViewPosition]}
       ></ImageBackground>
       <View style={styles.controls}>
         <NavButton
@@ -44,36 +50,33 @@ export function PhotoEditorScreen({ navigation, route }) {
           onPress={saveImage}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#2d2d2d",
+    backgroundColor: "rgb(45,45,45)",
     position: "relative",
-    alignItems: "center",
-    justifyContent: "center",
   },
   controls: {
-    borderRadius: 50,
-    borderWidth: 1,
-    borderColor: "gray",
-    backgroundColor: "rgba(0,0,0, 0.4)",
-    paddingVertical: 7,
-    paddingHorizontal: 5,
-    alignItems: "center",
-    alignSelf: "center",
-    justifyContent: "space-around",
-    position: "absolute",
-    width: "90%",
+    padding: 5,
+    backgroundColor: "rgba(0,0,0,0.4)",
     flexDirection: "row",
+    width: "90%",
+    borderRadius: 50,
+    borderColor: "gray",
+    borderWidth: 1,
+    alignSelf: "center",
+    justifyContent: "space-between",
+    alignItems: "center",
+    position: "absolute",
     bottom: 25,
   },
   imageView: {
     width: "100%",
-    aspectRatio: "3/4",
-    flexDirection: "column",
+    aspectRatio: "9/16",
+    position: "absolute",
   },
 });
