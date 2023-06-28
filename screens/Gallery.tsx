@@ -5,6 +5,7 @@ import {
   View,
   Image,
   TouchableOpacity,
+  useWindowDimensions,
 } from "react-native";
 import { Dimensions } from "react-native";
 import * as MediaLibrary from "expo-media-library";
@@ -15,9 +16,10 @@ import config from "../utils/config";
 export function GalleryScreen() {
   const [images, setImages] = useState([]);
   const isFocused = useIsFocused();
+  const { width } = useWindowDimensions();
 
   const IMAGE_SIZE = useMemo(() => {
-    return config.WIDTH / 3 - 2;
+    return width / 3 - 2;
   }, []);
 
   useEffect(() => {
