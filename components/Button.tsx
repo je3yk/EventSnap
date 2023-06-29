@@ -36,9 +36,14 @@ export default function Button({
     <TouchableOpacity
       disabled={disabled}
       onPress={onPress}
-      style={[styles.button]}
+      style={styles.button}
     >
-      <View style={wrapperStyles}>
+      <View
+        style={[
+          { alignItems: "center", justifyContent: "center" },
+          wrapperStyles,
+        ]}
+      >
         <IconComponent name={icon} size={iconSize} color={buttonStyle.color} />
         {title && (
           <Text style={{ ...styles.text, color: buttonStyle.color }}>

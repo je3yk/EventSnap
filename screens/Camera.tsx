@@ -1,42 +1,50 @@
 import { CameraType, Camera, FlashMode } from "expo-camera";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { StyleSheet, View, useWindowDimensions } from "react-native";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { StyleSheet, View, useWindowDimensions, Image } from "react-native";
 import Button from "../components/Button";
-import { useIsFocused } from "@react-navigation/native";
+import { useFocusEffect, useIsFocused } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import config from "../utils/config";
 import * as Brightness from "expo-brightness";
+import { MotiImage, MotiView } from "moti";
+
+const frontFlashFrame = require("../assets/flashFrame.png");
 
 export function CameraScreen({ navigation }) {
   const [type, setType] = useState(CameraType.front);
   const [flashMode, setFlashMode] = useState(FlashMode.off);
-  const [frontFlash, setFrontFlash] = useState(false);
+  const [frontFlashOn, setFrontFlashOn] = useState(false);
   const [defaultBrightness, setDefaultBrightness] = useState(null);
   const { width, height } = useWindowDimensions();
   const cameraRef = useRef(null);
   const isFocused = useIsFocused();
 
+  const frontFlash = useMemo(() => {
+    return flashMode === FlashMode.on && type === CameraType.front;
+  }, [flashMode, type]);
+
   useEffect(() => {
     (async () => {
-      if (
-        type === CameraType.front &&
-        flashMode === FlashMode.on &&
-        isFocused
-      ) {
+      if (frontFlash) {
         const brightness = await Brightness.getBrightnessAsync();
         setDefaultBrightness(brightness);
-        Brightness.setBrightnessAsync(1);
+        await Brightness.setBrightnessAsync(1);
       } else if (defaultBrightness !== null) {
-        setDefaultBrightness(defaultBrightness);
-      }
-    })();
-    return () => {
-      if (defaultBrightness !== null) {
-        Brightness.setBrightnessAsync(defaultBrightness);
+        await Brightness.setBrightnessAsync(defaultBrightness);
         setDefaultBrightness(null);
       }
-    };
-  }, [type, flashMode, isFocused]);
+    })();
+  }, [frontFlash]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("blur", async () => {
+      if (flashMode === FlashMode.on) {
+        toggleFlashMode();
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation, flashMode]);
 
   const buttonsContainerPosition = {
     bottom: config.BOTTOM_BAR_HEIGHT + 40,
@@ -65,13 +73,9 @@ export function CameraScreen({ navigation }) {
   }
 
   async function takePicture() {
-    const isFrontFlash =
-      type === CameraType.front && flashMode === FlashMode.on;
     if (cameraRef) {
       try {
-        isFrontFlash && setFrontFlash(true);
         const photoData = await cameraRef.current.takePictureAsync();
-        isFrontFlash && setFrontFlash(false);
         navigation.push("photo-edit", { photoData });
       } catch (e) {
         console.log(e);
@@ -80,15 +84,9 @@ export function CameraScreen({ navigation }) {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      {frontFlash && (
-        <View
-          style={[
-            styles.frontFlash,
-            { height: height + config.BOTTOM_BAR_HEIGHT + 40 },
-          ]}
-        />
-      )}
+    <SafeAreaView
+      style={[styles.container, frontFlash ? { backgroundColor: "#fff" } : {}]}
+    >
       <View style={[styles.cameraContainer, cameraViewPosition]}>
         {isFocused && (
           <Camera
@@ -98,6 +96,23 @@ export function CameraScreen({ navigation }) {
             flashMode={flashMode}
             ratio="16:9"
           ></Camera>
+        )}
+        {frontFlash && (
+          <MotiImage
+            from={{
+              opacity: 0,
+              scale: 1.5,
+            }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+            }}
+            transition={{
+              type: "timing",
+            }}
+            source={frontFlashFrame}
+            style={styles.frontFlash}
+          />
         )}
       </View>
       <View style={[styles.buttonContainer, buttonsContainerPosition]}>
@@ -139,11 +154,9 @@ const styles = StyleSheet.create({
     aspectRatio: "9/16",
   },
   frontFlash: {
-    position: "absolute",
-    top: 0,
-    zIndex: 1,
     width: "100%",
-    backgroundColor: "rgba(255,255,255,20)",
+    height: "100%",
+    position: "absolute",
   },
   buttonContainer: {
     width: "90%",

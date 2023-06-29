@@ -2,16 +2,13 @@ import { useEffect, useMemo, useState } from "react";
 import {
   StyleSheet,
   FlatList,
-  View,
   Image,
   TouchableOpacity,
   useWindowDimensions,
 } from "react-native";
-import { Dimensions } from "react-native";
 import * as MediaLibrary from "expo-media-library";
 import { useIsFocused } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import config from "../utils/config";
 
 export function GalleryScreen() {
   const [images, setImages] = useState([]);
