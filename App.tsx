@@ -1,57 +1,22 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { registerRootComponent } from "expo";
-import { CameraScreen, GalleryScreen, TimetableScreen } from "./screens";
 import { Camera } from "expo-camera";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import React, { useEffect, useState } from "react";
-import NavTabBar from "./components/NavTabBar";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { PhotoEditorScreen } from "./screens/PhotoEditor";
 import * as MediaLibrary from "expo-media-library";
+import Navigation from "./Navigation";
+import useFonts from "./hooks/useFonts";
+import * as SplashScreen from "expo-splash-screen";
 
-const Tab = createBottomTabNavigator();
+import "react-native-get-random-values";
+import { AuthProvider } from "./context/AuthContext";
 
-function BottomTab() {
-  return (
-    <Tab.Navigator
-      tabBar={(props) => <NavTabBar {...props} />}
-      initialRouteName="Timetable"
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <Tab.Screen
-        name="Timetable"
-        options={() => ({
-          title: "Wydarzenia",
-          icon: "event",
-        })}
-        component={TimetableScreen}
-      />
-      <Tab.Screen
-        name="Camera"
-        options={() => ({
-          title: "Aparat",
-          icon: "camera-alt",
-        })}
-        component={CameraScreen}
-      />
-      <Tab.Screen
-        name="Gallery"
-        options={() => ({
-          title: "Galeria",
-          icon: "camera-roll",
-        })}
-        component={GalleryScreen}
-      />
-    </Tab.Navigator>
-  );
-}
-
-const MainStack = createStackNavigator();
+SplashScreen.preventAutoHideAsync();
 
 function App() {
+  const fontsLoaded = useFonts();
+
   const [cameraPermission, setCameraPermission] = useState(null);
   const [mediaPermissionStatus, requestMediaPermission] =
     MediaLibrary.usePermissions();
@@ -69,18 +34,22 @@ function App() {
     }
   }, [mediaPermissionStatus, requestMediaPermission]);
 
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <MainStack.Navigator
-          initialRouteName="app"
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          <MainStack.Screen name="app" component={BottomTab} />
-          <MainStack.Screen name="photo-edit" component={PhotoEditorScreen} />
-        </MainStack.Navigator>
+        <AuthProvider>
+          <Navigation />
+        </AuthProvider>
       </NavigationContainer>
     </SafeAreaProvider>
   );

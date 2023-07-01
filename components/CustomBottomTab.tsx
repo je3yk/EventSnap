@@ -1,13 +1,7 @@
-import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
+import { View, StyleSheet } from "react-native";
 import NavButton from "./NavButton";
 
-export default function NavTabBar({
-  state,
-  descriptors,
-  navigation,
-  ...props
-}) {
+export default function CustomBottomTab({ state, descriptors, navigation }) {
   const isCameraActive =
     state.routes.findIndex((route) => route.name === "Camera") === state.index;
 
@@ -29,7 +23,11 @@ export default function NavTabBar({
 
         const isFocused = state.index === index;
 
-        const color = isFocused ? (isCameraActive ? "#fff" : "#05f") : "#aaa";
+        const color = isFocused
+          ? isCameraActive
+            ? "#fff"
+            : "#354396"
+          : "#aaa";
 
         const onPress = () => {
           const event = navigation.emit({

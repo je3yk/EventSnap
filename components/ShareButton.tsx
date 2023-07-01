@@ -1,8 +1,7 @@
 import React from "react";
-import { TouchableOpacity, StyleSheet, Text } from "react-native";
+import { TouchableOpacity, StyleSheet, Text, View } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import Button from "./Button";
-import { MotiView } from "moti";
+import Button from "./CameraButton";
 
 export default function ShareButton({ onSelect }) {
   const [shareOptionsVisible, setShareOptionsVisible] = React.useState(false);
@@ -12,34 +11,17 @@ export default function ShareButton({ onSelect }) {
       onPress={() => setShareOptionsVisible(!shareOptionsVisible)}
       style={styles.container}
     >
-      <MaterialCommunityIcons
-        name="share-variant-outline"
-        size={24}
-        color="#fff"
-      />
+      <MaterialCommunityIcons name="share" size={24} color="#fff" />
       <Text style={styles.text}>Udostępnij</Text>
       {shareOptionsVisible && (
-        <MotiView
-          from={{
-            opacity: 0,
-            bottom: 0,
-          }}
-          animate={{
-            opacity: 1,
-            bottom: 60,
-          }}
-          transition={{
-            type: "timing",
-          }}
-          style={styles.shareOptions}
-        >
+        <View style={styles.shareOptions}>
           <Button
             icon="share-variant-outline"
             title="Share"
             onPress={onSelect}
             variant="normal wrapper"
           />
-        </MotiView>
+        </View>
       )}
     </TouchableOpacity>
   );

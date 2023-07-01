@@ -3,7 +3,7 @@ import { TouchableOpacity, Text } from "react-native";
 
 export default function NavButton({
   isFocused = false,
-  label,
+  label = null,
   onPress,
   color,
   icon,
@@ -17,7 +17,7 @@ export default function NavButton({
       onPress={onPress}
     >
       <MaterialIcons name={icon} color={color} size={24} />
-      <Text style={{ fontSize: 12, color }}>{label}</Text>
+      {label && <Text style={{ fontSize: 12, color }}>{label}</Text>}
     </TouchableOpacity>
   );
 }

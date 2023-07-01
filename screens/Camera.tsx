@@ -1,19 +1,17 @@
 import { CameraType, Camera, FlashMode } from "expo-camera";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { StyleSheet, View, useWindowDimensions, Image } from "react-native";
-import Button from "../components/Button";
-import { useFocusEffect, useIsFocused } from "@react-navigation/native";
+import CameraButton from "../components/CameraButton";
+import { useIsFocused } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import config from "../utils/config";
 import * as Brightness from "expo-brightness";
-import { MotiImage, MotiView } from "moti";
 
 const frontFlashFrame = require("../assets/flashFrame.png");
 
 export function CameraScreen({ navigation }) {
   const [type, setType] = useState(CameraType.front);
   const [flashMode, setFlashMode] = useState(FlashMode.off);
-  const [frontFlashOn, setFrontFlashOn] = useState(false);
   const [defaultBrightness, setDefaultBrightness] = useState(null);
   const { width, height } = useWindowDimensions();
   const cameraRef = useRef(null);
@@ -98,36 +96,22 @@ export function CameraScreen({ navigation }) {
           ></Camera>
         )}
         {frontFlash && (
-          <MotiImage
-            from={{
-              opacity: 0,
-              scale: 1.5,
-            }}
-            animate={{
-              opacity: 1,
-              scale: 1,
-            }}
-            transition={{
-              type: "timing",
-            }}
-            source={frontFlashFrame}
-            style={styles.frontFlash}
-          />
+          <Image source={frontFlashFrame} style={styles.frontFlash} />
         )}
       </View>
       <View style={[styles.buttonContainer, buttonsContainerPosition]}>
-        <Button
+        <CameraButton
           variant="normal wrapper"
           icon="camera-flip-outline"
           onPress={toggleCameraType}
         />
-        <Button
+        <CameraButton
           icon="camera"
           iconType="MaterialIcons"
           onPress={takePicture}
           variant="big wrapper"
         />
-        <Button
+        <CameraButton
           variant="normal wrapper"
           icon={flashMode === FlashMode.on ? "flash-off" : "flash"}
           onPress={toggleFlashMode}

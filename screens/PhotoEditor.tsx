@@ -1,10 +1,9 @@
 import { View, StyleSheet, ImageBackground } from "react-native";
-import Button from "../components/Button";
 import NavButton from "../components/NavButton";
 import * as MediaLibrary from "expo-media-library";
 import { SafeAreaView } from "react-native-safe-area-context";
 import config from "../utils/config";
-import ShareButton from "../components/ShareButton";
+import React from "react";
 
 export function PhotoEditorScreen({ navigation, route }) {
   const { photoData } = route.params;
@@ -44,9 +43,9 @@ export function PhotoEditorScreen({ navigation, route }) {
           label="Anuluj"
           onPress={() => navigation.pop()}
         />
-        <ShareButton onSelect={() => console.log("option selected")} />
+        {/* <ShareButton onSelect={() => console.log("option selected")} /> */}
         <NavButton
-          color="blue"
+          color="#354396"
           icon="send"
           label="Wyślij do galerii"
           onPress={saveImage}

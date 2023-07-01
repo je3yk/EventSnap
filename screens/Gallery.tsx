@@ -3,20 +3,21 @@ import {
   StyleSheet,
   FlatList,
   Image,
-  TouchableOpacity,
   useWindowDimensions,
+  View,
 } from "react-native";
 import * as MediaLibrary from "expo-media-library";
 import { useIsFocused } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import React from "react";
 
 export function GalleryScreen() {
   const [images, setImages] = useState([]);
   const isFocused = useIsFocused();
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
 
   const IMAGE_SIZE = useMemo(() => {
-    return width / 3 - 2;
+    return width;
   }, []);
 
   useEffect(() => {
@@ -36,19 +37,22 @@ export function GalleryScreen() {
       <FlatList
         data={images}
         keyExtractor={(item) => item.id}
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ gap: 2 }}
-        columnWrapperStyle={{ gap: 2 }}
+        showsVerticalScrollIndicator={false}
+        horizontal
+        pagingEnabled
         renderItem={({ item }) => {
           if (!item.uri) {
             return null;
           }
 
           return (
-            <TouchableOpacity
+            <View
               style={{
                 width: IMAGE_SIZE,
-                height: IMAGE_SIZE,
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                flex: 1,
               }}
             >
               <Image
@@ -57,11 +61,14 @@ export function GalleryScreen() {
                   width: IMAGE_SIZE,
                   height: IMAGE_SIZE,
                 }}
+                style={{
+                  resizeMode: "cover",
+                }}
               />
-            </TouchableOpacity>
+            </View>
           );
         }}
-        numColumns={3}
+        numColumns={1}
       />
     </SafeAreaView>
   );
