@@ -46,7 +46,7 @@ export function PhotoEditorScreen({ navigation, route }) {
         />
         <ShareButton onSelect={() => console.log("option selected")} />
         <NavButton
-          color="#ff00ff"
+          color="blue"
           icon="send"
           label="Wyślij do galerii"
           onPress={saveImage}

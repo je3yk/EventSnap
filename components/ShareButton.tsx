@@ -12,7 +12,11 @@ export default function ShareButton({ onSelect }) {
       onPress={() => setShareOptionsVisible(!shareOptionsVisible)}
       style={styles.container}
     >
-      <MaterialCommunityIcons name="share" size={24} color="#fff" />
+      <MaterialCommunityIcons
+        name="share-variant-outline"
+        size={24}
+        color="#fff"
+      />
       <Text style={styles.text}>Udostępnij</Text>
       {shareOptionsVisible && (
         <MotiView
@@ -30,10 +34,10 @@ export default function ShareButton({ onSelect }) {
           style={styles.shareOptions}
         >
           <Button
-            icon="share"
+            icon="share-variant-outline"
             title="Share"
             onPress={onSelect}
-            variant="normal"
+            variant="normal wrapper"
           />
         </MotiView>
       )}
@@ -50,12 +54,8 @@ const styles = StyleSheet.create({
   shareOptions: {
     width: "90%",
     position: "absolute",
-    backgroundColor: "#000",
     alignItems: "center",
     flexDirection: "row",
-    borderRadius: 50,
-    borderColor: "#fff",
-    borderWidth: 1,
   },
   text: {
     fontSize: 12,
