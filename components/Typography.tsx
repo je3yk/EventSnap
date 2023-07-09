@@ -56,4 +56,9 @@ const typographyStyles = StyleSheet.create({
     lineHeight: 24,
     fontFamily: "cormorantGaramondItalic",
   },
+  caption: {
+    fontSize: 18,
+    lineHeight: 20,
+    fontFamily: "dancingScript",
+  },
 });

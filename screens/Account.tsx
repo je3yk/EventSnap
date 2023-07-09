@@ -52,13 +52,13 @@ export function AccountScreen() {
           label="Nazwa użytkownika"
           style={{ width: width * 0.8 }}
         />
-        {draftUsername && draftUsername !== username && (
+        {draftUsername && draftUsername !== username ? (
           <ProcessingButton onPress={onSave} style={{ borderRadius: 25 }}>
             <Typography variant="body" style={{ color: "#fff" }}>
               Zapisz
             </Typography>
           </ProcessingButton>
-        )}
+        ) : null}
       </View>
       <View style={styles.actionButtons}>
         <ProcessingButton onPress={signOut} style={{ borderRadius: 25 }}>

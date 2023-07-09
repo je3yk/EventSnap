@@ -93,8 +93,6 @@ export function CameraScreen({ navigation }) {
 
     if (!result.canceled) {
       navigation.push("photoEditor", { photoData: result.assets[0] });
-    } else {
-      alert("You need to pick an image");
     }
   }
 

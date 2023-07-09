@@ -3,20 +3,30 @@ import NavButton from "../components/NavButton";
 import * as MediaLibrary from "expo-media-library";
 import { SafeAreaView } from "react-native-safe-area-context";
 import config from "../utils/config";
-import React from "react";
+import React, { useState } from "react";
+import ImageView, { CARD_HEIGHT } from "../components/ImageView";
+import { captureRef } from "react-native-view-shot";
 
 export function PhotoEditorScreen({ navigation, route }) {
+  const [hideCaption, setHideCaption] = useState(false);
   const { photoData } = route.params;
+  const imageRef = React.useRef(null);
 
   const imageViewPosition = {
-    bottom: config.BOTTOM_BAR_HEIGHT + 30,
+    bottom: config.BOTTOM_BAR_HEIGHT + 10,
   };
 
   // async function using expo-media-library for saving image
   async function saveImage() {
-    const asset = await MediaLibrary.createAssetAsync(photoData.uri);
-    const album = await MediaLibrary.getAlbumAsync("EventSnaps");
     try {
+      setHideCaption(true);
+      const localUri = await captureRef(imageRef, {
+        quality: 1,
+        height: CARD_HEIGHT,
+      });
+      setHideCaption(false);
+      const asset = await MediaLibrary.createAssetAsync(localUri);
+      const album = await MediaLibrary.getAlbumAsync("EventSnaps");
       if (album) {
         await MediaLibrary.addAssetsToAlbumAsync([asset], album.id);
       } else {
@@ -32,10 +42,16 @@ export function PhotoEditorScreen({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ImageBackground
-        source={photoData}
-        style={[styles.imageView, imageViewPosition]}
-      ></ImageBackground>
+      <View
+        ref={imageRef}
+        collapsable={false}
+        style={[
+          { flex: 1, position: "relative", justifyContent: "flex-end" },
+          imageViewPosition,
+        ]}
+      >
+        <ImageView source={photoData} hideCaption={hideCaption} />
+      </View>
       <View style={styles.controls}>
         <NavButton
           color="#f1f1f1"
@@ -47,7 +63,7 @@ export function PhotoEditorScreen({ navigation, route }) {
         <NavButton
           color="#354396"
           icon="send"
-          label="Wyślij do galerii"
+          label="Wyślij"
           onPress={saveImage}
         />
       </View>
@@ -60,6 +76,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "rgb(45,45,45)",
     position: "relative",
+    alignItems: "center",
   },
   controls: {
     padding: 5,
@@ -74,10 +91,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "absolute",
     bottom: 25,
-  },
-  imageView: {
-    width: "100%",
-    aspectRatio: "9/16",
-    position: "absolute",
   },
 });
