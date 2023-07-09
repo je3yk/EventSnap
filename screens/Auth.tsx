@@ -150,10 +150,12 @@ export function AuthScreen() {
         source={appIcon}
         style={{ width: logoWidth, height: logoWidth, marginVertical: 10 }}
       />
-      <Typography variant="h1">Witaj</Typography>
+      <Typography variant="h1" style={{ color: "#365496" }}>
+        Witaj
+      </Typography>
       <Typography
         variant="body"
-        style={{ marginTop: 10, marginBottom: 20, textAlign: "center" }}
+        style={{ marginTop: 20, marginBottom: 20, textAlign: "center" }}
       >
         {instruction}
       </Typography>
