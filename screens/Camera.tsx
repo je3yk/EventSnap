@@ -6,6 +6,7 @@ import { useIsFocused } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import config from "../utils/config";
 import * as Brightness from "expo-brightness";
+import * as ImagePicker from "expo-image-picker";
 
 const frontFlashFrame = require("../assets/flashFrame.png");
 
@@ -74,10 +75,26 @@ export function CameraScreen({ navigation }) {
     if (cameraRef) {
       try {
         const photoData = await cameraRef.current.takePictureAsync();
-        navigation.push("photo-edit", { photoData });
+        navigation.push("photoEditor", { photoData });
       } catch (e) {
         console.log(e);
       }
+    }
+  }
+
+  async function pickImageAsync() {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsMultipleSelection: false,
+      allowsEditing: true,
+      aspect: [9, 16],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      navigation.push("photoEditor", { photoData: result.assets[0] });
+    } else {
+      alert("You need to pick an image");
     }
   }
 
@@ -98,12 +115,20 @@ export function CameraScreen({ navigation }) {
         {frontFlash && (
           <Image source={frontFlashFrame} style={styles.frontFlash} />
         )}
+        <View style={[styles.toolbarContainer]}>
+          <CameraButton
+            variant="normal wrapper"
+            icon={flashMode === FlashMode.on ? "flash-off" : "flash"}
+            onPress={toggleFlashMode}
+          />
+        </View>
       </View>
       <View style={[styles.buttonContainer, buttonsContainerPosition]}>
         <CameraButton
+          icon="images"
+          iconType="FontAwesome"
+          onPress={pickImageAsync}
           variant="normal wrapper"
-          icon="camera-flip-outline"
-          onPress={toggleCameraType}
         />
         <CameraButton
           icon="camera"
@@ -113,8 +138,8 @@ export function CameraScreen({ navigation }) {
         />
         <CameraButton
           variant="normal wrapper"
-          icon={flashMode === FlashMode.on ? "flash-off" : "flash"}
-          onPress={toggleFlashMode}
+          icon="camera-flip-outline"
+          onPress={toggleCameraType}
         />
       </View>
     </SafeAreaView>
@@ -150,5 +175,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     alignSelf: "center",
     position: "absolute",
+  },
+  toolbarContainer: {
+    width: "20%",
+    backgroundColor: "transparent",
+    position: "absolute",
+    right: 0,
+    top: 20,
   },
 });

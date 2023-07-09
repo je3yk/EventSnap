@@ -2,12 +2,19 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import useSessionToken from "../hooks/useSessionToken";
 
+type UserData = {
+  id: string;
+  username: string | null;
+  email: string;
+};
+
 type AuthContextType = {
-  user: Record<string, unknown> | null;
+  user: UserData | null;
   hasSession: boolean;
   sendVerificationCode: (email: string) => Promise<void>;
   setAuthorizationPayload: (email: string, token: string) => Promise<void>;
   signOut: () => Promise<void>;
+  updateUserData: (data: Partial<UserData>) => Promise<void>;
 };
 
 type AuthProviderProps = {
@@ -65,6 +72,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
+  async function updateUserData(data) {
+    const { error } = await supabase
+      .from("profiles")
+      .update(data)
+      .eq("id", user?.id);
+
+    if (error) {
+      throw error;
+    }
+  }
+
   async function signOut() {
     const { error } = await supabase.auth.signOut();
 
@@ -85,6 +103,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         sendVerificationCode,
         setAuthorizationPayload,
         signOut,
+        updateUserData,
       }}
     >
       {children}

@@ -17,7 +17,7 @@ export function GalleryScreen() {
   const { width, height } = useWindowDimensions();
 
   const IMAGE_SIZE = useMemo(() => {
-    return width;
+    return width / 3;
   }, []);
 
   useEffect(() => {
@@ -38,23 +38,14 @@ export function GalleryScreen() {
         data={images}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
-        horizontal
-        pagingEnabled
+        numColumns={3}
         renderItem={({ item }) => {
           if (!item.uri) {
             return null;
           }
 
           return (
-            <View
-              style={{
-                width: IMAGE_SIZE,
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                flex: 1,
-              }}
-            >
+            <View style={{ width: IMAGE_SIZE, height: IMAGE_SIZE }}>
               <Image
                 source={{
                   uri: item.uri,
@@ -68,7 +59,6 @@ export function GalleryScreen() {
             </View>
           );
         }}
-        numColumns={1}
       />
     </SafeAreaView>
   );

@@ -42,8 +42,13 @@ const typographyStyles = StyleSheet.create({
     fontFamily: "dancingScript",
   },
   body: {
-    fontSize: 16,
+    fontSize: 20,
     lineHeight: 24,
+    fontFamily: "cormorantGaramond",
+  },
+  bodySmall: {
+    fontSize: 16,
+    lineHeight: 20,
     fontFamily: "cormorantGaramond",
   },
   bodyItalic: {

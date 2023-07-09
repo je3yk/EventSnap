@@ -11,7 +11,8 @@ import {
 import { useAuth } from "../context/AuthContext";
 import { Typography } from "../components/Typography";
 import { useMemo, useState } from "react";
-import Button from "../components/Button";
+import Button, { ProcessingButton } from "../components/Button";
+import Input from "../components/Input";
 
 const appIcon = require("../assets/adaptive-icon.png");
 
@@ -26,24 +27,24 @@ const EnterEmail = ({ state, style = {}, onContinue }: StepProps) => {
   const [email, setEmail] = useState<string | null>(null);
   return (
     <View style={[style, { alignItems: "center" }]}>
-      <TextInput
-        style={styles.input}
-        onChangeText={setEmail}
+      <Input
+        label={"Email użytkownika"}
+        onChange={setEmail}
         value={email}
-        autoCapitalize="none"
         placeholder="jedrzej.zawojski@gmail.com"
+        keyboardType="email-address"
       />
       {state === "enterEmail" && (
-        <Button
-          onPress={() => {
-            onContinue(email);
+        <ProcessingButton
+          onPress={async () => {
+            await onContinue(email);
           }}
           style={styles.button}
         >
           <Typography variant="body" style={{ color: "#fff" }}>
             Wyslij kod weryfikacyjny
           </Typography>
-        </Button>
+        </ProcessingButton>
       )}
     </View>
   );
@@ -53,11 +54,10 @@ const EnterCode = ({ state, style = {}, onContinue, onRetry }: StepProps) => {
   const [code, setCode] = useState<string | null>(null);
   return (
     <View style={[style, { alignItems: "center" }]}>
-      <TextInput
-        style={styles.input}
-        onChangeText={setCode}
+      <Input
+        label={"Kod weryfikacyjny"}
+        onChange={setCode}
         value={code}
-        autoCapitalize="none"
         placeholder="123456"
         keyboardType="numeric"
       />
@@ -69,21 +69,21 @@ const EnterCode = ({ state, style = {}, onContinue, onRetry }: StepProps) => {
             width: "100%",
           }}
         >
-          <Button onPress={() => onRetry()} variant="secondary">
+          <ProcessingButton onPress={onRetry} variant="secondary">
             <Typography variant="body" style={{ color: "#354396" }}>
               Wyślij ponownie
             </Typography>
-          </Button>
-          <Button
-            onPress={() => {
-              onContinue(code);
+          </ProcessingButton>
+          <ProcessingButton
+            onPress={async () => {
+              await onContinue(code);
             }}
             style={styles.button}
           >
             <Typography variant="body" style={{ color: "#fff" }}>
               Zaloguj się
             </Typography>
-          </Button>
+          </ProcessingButton>
         </View>
       )}
     </View>
@@ -151,7 +151,10 @@ export function AuthScreen() {
         style={{ width: logoWidth, height: logoWidth, marginVertical: 10 }}
       />
       <Typography variant="h1">Witaj</Typography>
-      <Typography variant="body" style={{ marginTop: 10 }}>
+      <Typography
+        variant="body"
+        style={{ marginTop: 10, marginBottom: 20, textAlign: "center" }}
+      >
         {instruction}
       </Typography>
 
@@ -177,17 +180,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "flex-start",
-  },
-  input: {
-    marginVertical: 20,
-    fontSize: 20,
-    lineHeight: 24,
-    borderBottomColor: "black",
-    borderBottomWidth: 1,
-    textAlign: "center",
-    paddingBottom: 5,
-    paddingHorizontal: 5,
-    width: "100%",
   },
   button: {
     borderRadius: 25,

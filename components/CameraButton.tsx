@@ -1,6 +1,17 @@
 import * as React from "react";
-import { Text, TouchableOpacity, StyleSheet, View } from "react-native";
-import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import {
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  View,
+  StyleProp,
+  ViewStyle,
+} from "react-native";
+import {
+  MaterialCommunityIcons,
+  MaterialIcons,
+  FontAwesome5,
+} from "@expo/vector-icons";
 
 const variants = {
   normal: {
@@ -17,20 +28,37 @@ const variants = {
   },
 };
 
+type CameraButtonProps = {
+  title?: string;
+  onPress: () => void;
+  iconType?: "MaterialCommunity" | "MaterialIcons" | "FontAwesome";
+  buttonStyle?: StyleProp<ViewStyle>;
+  color?: string;
+  backgroundColor?: string;
+  disabled?: boolean;
+  variant: string;
+  icon: string;
+};
+
+const iconComponents = {
+  MaterialCommunity: MaterialCommunityIcons,
+  MaterialIcons: MaterialIcons,
+  FontAwesome: FontAwesome5,
+};
+
 export default function CameraButton({
   title = null,
   onPress,
   icon,
   iconType = "MaterialCommunity",
-  buttonStyle = { color: "#fff" },
+  color = "#fff",
   disabled = false,
   variant,
-}) {
-  const IconComponent =
-    iconType === "MaterialCommunity" ? MaterialCommunityIcons : MaterialIcons;
-
+}: CameraButtonProps) {
   const wrapperStyles = variant.split(" ").map((v) => variants[v]);
   const iconSize = variant.includes("normal") ? 32 : 64;
+
+  const IconComponent = iconComponents[iconType];
 
   return (
     <TouchableOpacity
@@ -44,12 +72,8 @@ export default function CameraButton({
           wrapperStyles,
         ]}
       >
-        <IconComponent name={icon} size={iconSize} color={buttonStyle.color} />
-        {title && (
-          <Text style={{ ...styles.text, color: buttonStyle.color }}>
-            {title}
-          </Text>
-        )}
+        <IconComponent name={icon} size={iconSize} color={color} />
+        {title && <Text style={{ ...styles.text, color: color }}>{title}</Text>}
       </View>
     </TouchableOpacity>
   );
