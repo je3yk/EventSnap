@@ -1,5 +1,6 @@
 import { View, StyleSheet } from "react-native";
-import NavButton from "./NavButton";
+import Button from "./Button";
+import { Typography } from "./Typography";
 
 export default function CustomBottomTab({ state, descriptors, navigation }) {
   const isCameraActive =
@@ -43,14 +44,22 @@ export default function CustomBottomTab({ state, descriptors, navigation }) {
         };
 
         return (
-          <NavButton
+          <Button
             key={route.key}
-            isFocused
-            icon={options.icon}
+            variant="secondary"
+            icon={{
+              name: options.icon,
+              type: "MaterialIcons",
+              color: color,
+              size: 24,
+            }}
+            style={{ flex: 1 }}
             onPress={onPress}
-            color={color}
-            label={label}
-          />
+          >
+            <Typography variant="buttonLabel" style={{ color }}>
+              {label}
+            </Typography>
+          </Button>
         );
       })}
     </View>
@@ -59,16 +68,15 @@ export default function CustomBottomTab({ state, descriptors, navigation }) {
 
 const styles = StyleSheet.create({
   tabBar: {
-    padding: 5,
     flexDirection: "row",
     width: "90%",
     borderRadius: 50,
     borderColor: "gray",
     borderWidth: 1,
     alignSelf: "center",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
     alignItems: "center",
     position: "absolute",
-    bottom: 25,
+    bottom: 20,
   },
 });

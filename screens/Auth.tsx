@@ -7,6 +7,8 @@ import {
   View,
   StyleProp,
   ViewStyle,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { useAuth } from "../context/AuthContext";
 import { Typography } from "../components/Typography";
@@ -69,7 +71,12 @@ const EnterCode = ({ state, style = {}, onContinue, onRetry }: StepProps) => {
             width: "100%",
           }}
         >
-          <ProcessingButton onPress={onRetry} variant="secondary">
+          <ProcessingButton
+            onPress={async () => {
+              await onRetry();
+            }}
+            variant="secondary"
+          >
             <Typography variant="body" style={{ color: "#354396" }}>
               Wyślij ponownie
             </Typography>
@@ -150,29 +157,41 @@ export function AuthScreen() {
         source={appIcon}
         style={{ width: logoWidth, height: logoWidth, marginVertical: 10 }}
       />
-      <Typography variant="h1" style={{ color: "#365496" }}>
-        Witaj
-      </Typography>
-      <Typography
-        variant="body"
-        style={{ marginTop: 20, marginBottom: 20, textAlign: "center" }}
-      >
-        {instruction}
-      </Typography>
 
-      <EnterEmail
-        state={loginState}
-        onContinue={sendOtp}
-        style={{ width: width * 0.8 }}
-      />
-      {loginState === "enterCode" && (
-        <EnterCode
-          state={loginState}
-          onContinue={onAuthorize}
-          onRetry={sendOtp}
-          style={{ width: width * 0.8 }}
-        />
-      )}
+      <KeyboardAvoidingView behavior="position">
+        <View
+          style={{
+            width: width,
+            backgroundColor: "#f1f1f1",
+            padding: 5,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Typography variant="h1" style={{ color: "#365496" }}>
+            Witaj
+          </Typography>
+          <Typography
+            variant="body"
+            style={{ marginTop: 20, marginBottom: 20, textAlign: "center" }}
+          >
+            {instruction}
+          </Typography>
+          <EnterEmail
+            state={loginState}
+            onContinue={sendOtp}
+            style={{ width: width * 0.8 }}
+          />
+          {loginState === "enterCode" && (
+            <EnterCode
+              state={loginState}
+              onContinue={onAuthorize}
+              onRetry={sendOtp}
+              style={{ width: width * 0.8 }}
+            />
+          )}
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }

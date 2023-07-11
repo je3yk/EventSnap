@@ -6,8 +6,8 @@ const flowerCircle = require("../assets/flower-circle-small.png");
 const MARGIN = 30;
 const { width } = Dimensions.get("window");
 const ratio = 1 / 1;
-const CARD_WIDTH = width * 0.8;
-export const CARD_HEIGHT = CARD_WIDTH * 0.5 + 30; //* ratio;
+const CARD_WIDTH = width * 0.85;
+export const CARD_HEIGHT = CARD_WIDTH * 0.5 + 40; //* ratio;
 export const CARD_CONTAINER_HEIGHT = CARD_HEIGHT + MARGIN * 2;
 
 const styles = StyleSheet.create({
@@ -58,28 +58,30 @@ export default function EventCard({ item }) {
   return (
     <View style={[styles.container]}>
       <View style={[styles.card]}>
-        <Typography variant="h1" style={{ color: "#354396" }}>
+        <Typography variant="h1" style={{ color: "#354396", flex: 1 }}>
           Event title
         </Typography>
-        <Typography variant="bodyItalic" style={{ color: "black" }}>
+        <Typography variant="bodyItalic" style={{ color: "black", flex: 1 }}>
           Some details
         </Typography>
         <View
           style={{
             width: "90%",
+            alignItems: "center",
+            justifyContent: "center",
             borderTopColor: "lightgray",
-            padding: 5,
+            paddingTop: 5,
             borderTopWidth: 1,
+            flex: 1,
           }}
         >
           <Typography
-            variant="label"
+            variant="captionSmall"
             style={{
               textAlign: "center",
               color: "gray",
-              overflow: "hidden",
             }}
-            numberOfLines={2}
+            numberOfLines={3}
           >
             {item.toast}
           </Typography>

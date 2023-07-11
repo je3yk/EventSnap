@@ -1,3 +1,8 @@
+import {
+  FontAwesome5,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import { useState } from "react";
 import {
   StyleSheet,
@@ -13,12 +18,27 @@ type ButtonProps = {
   variant?: "primary" | "secondary";
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
+  icon?: {
+    type?: "MaterialCommunity" | "MaterialIcons" | "FontAwesome";
+    name?: string;
+    size?: number;
+    color?: string;
+  };
 };
 
 type ProcessingButtonProps = ButtonProps & { onPress: () => Promise<void> };
 
-export function ProcessingButton(props: ButtonProps) {
+const iconComponents = {
+  MaterialCommunity: MaterialCommunityIcons,
+  MaterialIcons: MaterialIcons,
+  FontAwesome: FontAwesome5,
+};
+
+export function ProcessingButton(props: ProcessingButtonProps) {
   const [processing, setProcessing] = useState(false);
+
+  const { icon } = props;
+  const IconComponent = icon ? iconComponents[props.icon.type] : null;
 
   async function onPress() {
     setProcessing(true);
@@ -38,16 +58,20 @@ export function ProcessingButton(props: ButtonProps) {
       style={StyleSheet.flatten([
         styles.button,
         styles[props.variant ?? "primary"],
-        props.style,
         { flexDirection: "row" },
+        props.style,
       ])}
     >
-      {processing && (
+      {processing ? (
         <ActivityIndicator
           animating={processing}
           size="small"
           color={props.variant === "secondary" ? "#354396" : "#fff"}
         />
+      ) : (
+        IconComponent && (
+          <IconComponent name={icon.name} color={icon.color} size={icon.size} />
+        )
       )}
       {props.children}
     </TouchableOpacity>
@@ -55,6 +79,9 @@ export function ProcessingButton(props: ButtonProps) {
 }
 
 export default function Button(props: ButtonProps) {
+  const { icon } = props;
+  const IconComponent = icon ? iconComponents[props.icon.type] : null;
+
   return (
     <TouchableOpacity
       disabled={props.disabled}
@@ -65,6 +92,9 @@ export default function Button(props: ButtonProps) {
         props.style,
       ])}
     >
+      {IconComponent && (
+        <IconComponent name={icon.name} color={icon.color} size={icon.size} />
+      )}
       {props.children}
     </TouchableOpacity>
   );
@@ -80,8 +110,5 @@ const styles = StyleSheet.create({
   primary: {
     backgroundColor: "#354396",
   },
-  secondary: {
-    color: "#354396",
-    borderColor: "#354396",
-  },
+  secondary: {},
 });

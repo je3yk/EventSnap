@@ -1,14 +1,16 @@
-import { View, StyleSheet, ImageBackground } from "react-native";
-import NavButton from "../components/NavButton";
+import { View, StyleSheet } from "react-native";
 import * as MediaLibrary from "expo-media-library";
 import { SafeAreaView } from "react-native-safe-area-context";
 import config from "../utils/config";
-import React, { useState } from "react";
+import React from "react";
 import ImageView, { CARD_HEIGHT, CARD_WIDTH } from "../components/ImageView";
 import { captureRef } from "react-native-view-shot";
+import Button, { ProcessingButton } from "../components/Button";
+import { Typography } from "../components/Typography";
+import useStorage from "../hooks/useStorage";
 
 export function PhotoEditorScreen({ navigation, route }) {
-  const [hideCaption, setHideCaption] = useState(false);
+  const { uploadPhoto } = useStorage();
   const { photoData } = route.params;
   const imageRef = React.useRef(null);
 
@@ -17,16 +19,15 @@ export function PhotoEditorScreen({ navigation, route }) {
   };
 
   // async function using expo-media-library for saving image
-  async function saveImage() {
+  async function sendImage() {
     try {
-      const asset = await MediaLibrary.createAssetAsync(photoData.uri);
-      const album = await MediaLibrary.getAlbumAsync("EventSnapsOriginals");
-      if (album) {
-        await MediaLibrary.addAssetsToAlbumAsync([asset], album.id);
-      } else {
-        await MediaLibrary.createAlbumAsync("EventSnapsOriginals", asset);
-      }
+      const formData = new FormData();
+      formData.append("file", photoData);
+
+      await uploadPhoto(formData);
+      alert("File sent");
     } catch (error) {
+      alert("Some error");
       throw error;
     }
     navigation.pop();
@@ -48,16 +49,21 @@ export function PhotoEditorScreen({ navigation, route }) {
     } catch (error) {
       throw error;
     }
+    alert("Zdjęcie zostało zapisane na Twoim urządzeniu");
   }
 
-  async function onSave() {
+  async function onSend() {
     try {
-      await Promise.all([saveImage(), saveCard()]);
+      await Promise.all([sendImage()]);
       alert("Image saved!");
     } catch (error) {
       alert("Something went wrong");
       console.error(error);
     }
+  }
+
+  function onShare() {
+    alert("onShare clicked!");
   }
 
   return (
@@ -67,22 +73,70 @@ export function PhotoEditorScreen({ navigation, route }) {
         collapsable={false}
         style={[{ height: CARD_HEIGHT, width: CARD_WIDTH }]}
       >
-        <ImageView source={photoData} hideCaption={hideCaption} />
+        <ImageView source={photoData} />
       </View>
       <View style={styles.controls}>
-        <NavButton
-          color="#f1f1f1"
-          icon="cancel"
-          label="Anuluj"
+        <Button
+          variant="secondary"
+          icon={{
+            type: "MaterialIcons",
+            name: "cancel",
+            color: "#f1f1f1",
+            size: 24,
+          }}
+          style={{ flex: 1 }}
           onPress={() => navigation.pop()}
-        />
+        >
+          <Typography variant="buttonLabel" style={{ color: "#f1f1f1" }}>
+            Anuluj
+          </Typography>
+        </Button>
         {/* <ShareButton onSelect={() => console.log("option selected")} /> */}
-        <NavButton
-          color="#354396"
-          icon="send"
-          label="Wyślij"
-          onPress={onSave}
-        />
+        <ProcessingButton
+          variant="secondary"
+          icon={{
+            type: "MaterialCommunity",
+            name: "download",
+            color: "#f1f1f1",
+            size: 24,
+          }}
+          style={{ flex: 1, flexDirection: "column" }}
+          onPress={saveCard}
+        >
+          <Typography variant="buttonLabel" style={{ color: "#f1f1f1" }}>
+            Pobierz
+          </Typography>
+        </ProcessingButton>
+        <Button
+          variant="secondary"
+          icon={{
+            type: "MaterialIcons",
+            name: "share",
+            color: "#f1f1f1",
+            size: 24,
+          }}
+          style={{ flex: 1 }}
+          onPress={onShare}
+        >
+          <Typography variant="buttonLabel" style={{ color: "#f1f1f1" }}>
+            Udostępnij
+          </Typography>
+        </Button>
+        <Button
+          variant="secondary"
+          icon={{
+            type: "MaterialCommunity",
+            name: "send",
+            color: "#f1f1f1",
+            size: 24,
+          }}
+          style={{ flex: 1 }}
+          onPress={onSend}
+        >
+          <Typography variant="buttonLabel" style={{ color: "#f1f1f1" }}>
+            Wyslij
+          </Typography>
+        </Button>
       </View>
     </SafeAreaView>
   );
@@ -92,21 +146,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "rgb(45,45,45)",
-    position: "relative",
     alignItems: "center",
   },
   controls: {
-    padding: 5,
-    backgroundColor: "rgba(0,0,0,0.4)",
+    backgroundColor: "rgba(0,0,0, 0.4)",
     flexDirection: "row",
     width: "90%",
     borderRadius: 50,
     borderColor: "gray",
     borderWidth: 1,
     alignSelf: "center",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
     alignItems: "center",
     position: "absolute",
-    bottom: 25,
+    bottom: 20,
   },
 });

@@ -61,4 +61,13 @@ const typographyStyles = StyleSheet.create({
     lineHeight: 20,
     fontFamily: "dancingScript",
   },
+  captionSmall: {
+    fontSize: 14,
+    lineHeight: 16,
+    fontFamily: "dancingScript",
+  },
+  buttonLabel: {
+    fontSize: 10,
+    lineHeight: 12,
+  },
 });

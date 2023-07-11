@@ -62,11 +62,16 @@ function BottomTabsStack() {
 }
 
 export default function Navigation() {
-  const { hasSession } = useSessionToken();
+  const { hasSession, fetchingSession } = useSessionToken();
+
+  if (fetchingSession) {
+    return null;
+  }
 
   if (!hasSession) {
     return (
       <MainStack.Navigator
+        initialRouteName="authorization"
         screenOptions={{
           headerShown: false,
         }}
@@ -78,6 +83,7 @@ export default function Navigation() {
 
   return (
     <MainStack.Navigator
+      initialRouteName="app"
       screenOptions={{
         headerShown: false,
       }}
